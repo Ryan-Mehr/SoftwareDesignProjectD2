@@ -7,3 +7,4 @@ HOW TO RUN AND DEVELOP:
 7. Import the SQL file to construct the database structure.
   * Read SQL instructions sent in group chat.
 8. Everything should be working as expected.
+9. Make a new branch and work on that branch when doing development.
