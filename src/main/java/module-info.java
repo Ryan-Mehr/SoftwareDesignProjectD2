@@ -13,7 +13,9 @@ module org.example.softwaredesignprojectd2 {
     requires java.sql;
     requires jbcrypt;
 
+    opens Classes.PvE to javafx.fxml;
     opens GUI to javafx.fxml;
     opens db.migration;
     exports GUI;
+    exports Classes.PvE;
 }
