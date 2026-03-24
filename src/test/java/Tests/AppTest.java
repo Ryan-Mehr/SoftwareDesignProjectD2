@@ -54,7 +54,7 @@ public class AppTest {
         return p;
     }
 
-    // =========================================================================
+    // ====================================================================
     // 1. STRATEGY PATTERN — Action interface (AttackAction / DefendAction)
     //    The Action interface lets behaviour be swapped at runtime.
     // =========================================================================
