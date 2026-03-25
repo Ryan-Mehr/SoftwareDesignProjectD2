@@ -14,19 +14,16 @@
    </padding>
    <Label fx:id="roomLabel" text="Room 1: Zombie" />
 
-   <!-- Player Health -->
    <HBox spacing="10">
       <Label text="Player Health:" />
       <Label fx:id="playerHealthLabel" text="100" />
    </HBox>
 
-   <!-- Enemy Health -->
    <HBox spacing="10">
       <Label text="Enemy Health:" />
       <Label fx:id="enemyHealthLabel" text="100" />
    </HBox>
 
-   <!-- Player Action Buttons -->
    <HBox spacing="10">
       <Button fx:id="attackButton" onAction="#handleAttack" text="Attack" />
       <Button fx:id="defendButton" onAction="#handleDefend" text="Defend" />
@@ -34,7 +31,7 @@
       <Button fx:id="nextRoomButton" disable="true" mnemonicParsing="false" onAction="#handleNextRoom" text="Next Room" />
    </HBox>
 
-   <!-- Battle Log -->
    <TextArea fx:id="battleLog" editable="false" prefHeight="250" wrapText="true" />
+   <Button fx:id="returnButton" layoutX="250.0" layoutY="600.0" onAction="#handleReturnToMenu" text="Return to Main Menu" visible="false" />
 
 </VBox>
