@@ -1,5 +1,11 @@
 package GUI;
 
+import Classes.Heros.Hero;
+import Classes.Heros.OrderHero;
+import Factory.ChaosFactory;
+import Factory.MageFactory;
+import Factory.OrderFactory;
+import Factory.WarriorFactory;
 import GlobalVariables.ApplicationStates;
 import Repository.UserRepository;
 import javafx.event.ActionEvent;
@@ -16,7 +22,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
-import Classes.Battle.Player;
+
 import Classes.Battle.BattleManager;
 
 
@@ -25,6 +31,16 @@ public class ApplicationController {
     @FXML private PasswordField passwordField;
     @FXML private Label statusLabel;
     @FXML private Label usernameLabel;
+    @FXML private ChoiceBox<String> chooseHeroChoicebox;
+    @FXML private TextField campaignNameField;
+
+    String[] heroClasses = {"ORDER", "CHAOS", "WARRIOR", "MAGE"};
+
+    OrderFactory orderFactory = new OrderFactory();
+    ChaosFactory chaosFactory = new ChaosFactory();
+    WarriorFactory warriorFactory = new WarriorFactory();
+    MageFactory mageFactory = new MageFactory();
+
 
     // Make sure Repositories are singletons.
     UserRepository userRepository = UserRepository.getInstance();
@@ -34,6 +50,14 @@ public class ApplicationController {
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GUI/" + fileName + ".fxml")));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(newRoot);
+        if (Objects.equals(fileName, "BattleView")) {
+            stage.setWidth(1100);
+            stage.setHeight(900);
+        }
+        else {
+            stage.setWidth(700);
+            stage.setHeight(700);
+        }
         stage.setResizable(false);
         stage.show();
     }
@@ -214,6 +238,76 @@ public class ApplicationController {
     public void switchToPvPInvite(ActionEvent event) throws IOException {
         if (checkLoggedIn()) {
             switchScene(event, "PvPInvite");
+        }
+    }
+    public void switchToPvEMenu(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            switchScene(event, "PvEMenu");
+        }
+    }
+    @FXML
+    public void switchToPvENewCampaign(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            switchScene(event, "NewCampaignMenu");
+        }
+    }
+    public void beginPvENewCampaign(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            if (campaignNameField.getText().isEmpty()) {
+                System.out.println("Please enter your campaign name");
+                return;
+            }
+
+            String choiceBoxValue = (String) chooseHeroChoicebox.getValue();
+            Hero heroChosen;
+
+            if (chooseHeroChoicebox.getValue() == null) {
+                System.out.println("Please choose a hero");
+                return;
+                // System.out.println("Automatically choosing the Order Hero.");
+                // choiceBoxValue = "ORDER";
+                // heroChosen = orderFactory.createHero();
+            }
+
+            switch (choiceBoxValue) {
+                case "ORDER":
+                    System.out.println("ORDER");
+                    heroChosen = orderFactory.createHero();
+                    break;
+                case "CHAOS":
+                    System.out.println("CHAOS");
+                    heroChosen = chaosFactory.createHero();
+                case "WARRIOR":
+                    System.out.println("WARRIOR");
+                    heroChosen = warriorFactory.createHero();
+                    break;
+                case "MAGE":
+                    System.out.println("MAGE");
+                    heroChosen = mageFactory.createHero();
+                    break;
+            }
+
+            switchScene(event, "PvE");
+        }
+    }
+    public void switchToPvELoadCampaign(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            System.out.println("UNAVAILABLE AT THE MOMENT");
+            //switchScene(event, "LoadCampaignMenu");
+        }
+    }
+    public void beginPvELoadCampaign(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            switchScene(event, "PvE");
+        }
+    }
+
+
+    // Initialize to make things preload.
+    @FXML
+    public void initialize() {
+        if (chooseHeroChoicebox != null) {
+            chooseHeroChoicebox.getItems().addAll(heroClasses);
         }
     }
 

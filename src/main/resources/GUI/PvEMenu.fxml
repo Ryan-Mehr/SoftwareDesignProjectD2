@@ -12,25 +12,25 @@
             <Font name="Monospaced Bold" size="36.0" />
          </font>
       </Text>
-       <Button layoutX="225.0" layoutY="247.0" mnemonicParsing="false" onAction="#switchToPvPInvite" prefHeight="50.0" prefWidth="250.0" text="PvP">
-           <font>
-               <Font name="Monospaced Bold" size="24.0" />
-           </font>
-       </Button>
-       <Button layoutX="225.0" layoutY="308.0" mnemonicParsing="false" onAction="#switchToPvEMenu" prefHeight="50.0" prefWidth="250.0" text="PvE">
+      <Button layoutX="225.0" layoutY="247.0" mnemonicParsing="false" onAction="#switchToPvENewCampaign" prefHeight="50.0" prefWidth="250.0" text="NEW CAMPAIGN">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Button>
-      <Button layoutX="225.0" layoutY="435.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="50.0" prefWidth="250.0" text="BACK">
+      <Button layoutX="225.0" layoutY="498.0" mnemonicParsing="false" onAction="#playGame" prefHeight="50.0" prefWidth="250.0" text="BACK">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Button>
-      <Text layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CHOOSE GAME MODE" textAlignment="CENTER" wrappingWidth="700.0">
+      <Text layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PvE Menu" textAlignment="CENTER" wrappingWidth="700.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
+      <Button layoutX="225.0" layoutY="315.0" mnemonicParsing="false" onAction="#switchToPvELoadCampaign" prefHeight="50.0" prefWidth="250.0" text="LOAD CAMPAIGN">
+         <font>
+            <Font name="Monospaced Bold" size="24.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

@@ -1,7 +1,6 @@
 package DAO;
 
 import Classes.User;
-import GlobalVariables.ApplicationConstants;
 import Repository.DatabaseManager;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -23,22 +22,39 @@ public class UserDAO {
         return obj;
     }
 
+    public void registrationHelper(String usernameGiven) throws SQLException, ClassNotFoundException {
+        String query = "INSERT INTO parties (username, party_name, party_info) VALUES (?, 'My Awesome New Party', 'This is my party description.')";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, usernameGiven);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean save(String username, String password) throws SQLException {
-        String hashedPassword = BCrypt.hashpw(password,BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO USERS (username, password) VALUES (?, ?)";
+        boolean ifSo = false;
 
         try (Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashedPassword);
-            return preparedStatement.executeUpdate() > 0;
+            ifSo = preparedStatement.executeUpdate() > 0;
+            registrationHelper(username);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
+        return ifSo;
     }
 
-    public boolean checkIfUsernameExists(String username) throws SQLException {
+        public boolean checkIfUsernameExists(String username) throws SQLException {
         String query = "SELECT COUNT(*) AS total_amount FROM USERS WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
