@@ -20,9 +20,10 @@
             * If you refresh on Schemas, you should see the new tables created.
     5) You are now ready to start the game through the Launcher.java file in the GUI folder.
 2. How to run Test Cases:
-    1)
+    1) Find the test folder and find java>Tests>AppTest (Should be all highlighted in Green), right click on AppTest and click on 'Run AppTest'.
 3. Other submission:
     1) Documents should be found in the EClass submission
+    2) Video presentation is or will be in another EClass submission.
 
 
 **HOW TO RUN AND DEVELOP:**
@@ -35,3 +36,6 @@
   * Read SQL instructions sent in group chat.
 8. Everything should be working as expected.
 9. Make a new branch and work on that branch when doing development.
+
+**GROUP MEMBERS:**
+AtheenPahavathas, Anastasia Filipoiu, Ryan Mehr, Zarlasht Mikhail
