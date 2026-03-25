@@ -5,6 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
 
 public class PvEController {
 
@@ -12,6 +17,7 @@ public class PvEController {
     @FXML private Button defendButton;
     @FXML private Button startButton;
     @FXML private Button nextRoomButton;
+    @FXML private Button returnButton;
 
     @FXML private Label playerHealthLabel;
     @FXML private Label enemyHealthLabel;
@@ -140,6 +146,7 @@ public class PvEController {
             defendButton.setVisible(false);
             nextRoomButton.setDisable(true);
             startButton.setDisable(false);
+            returnButton.setVisible(true);
         }
     }
 
@@ -157,10 +164,26 @@ public class PvEController {
     }
 
     @FXML
+    private void handleReturnToMenu(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/MainMenu.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            System.out.println("Error loading Main Menu: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void initialize() {
         attackButton.setVisible(false);
         defendButton.setVisible(false);
         nextRoomButton.setDisable(true);
+        returnButton.setVisible(false);
     }
 
 }
