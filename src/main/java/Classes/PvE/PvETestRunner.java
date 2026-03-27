@@ -1,4 +1,6 @@
 package Classes.PvE;
+import Classes.Heros.Hero;
+import Classes.Heros.Warrior;
 import Classes.User;
 import DAO.UserDAO;
 import Classes.User;
@@ -18,6 +20,7 @@ public class PvETestRunner {
 
             System.out.println("Logged in as: " + user.getUsername());
 
+            Hero playerHero = new Warrior();
             Player player = new Player(user.getUsername(), 150, 25);
 
             Enemy zombie = new Enemy("Zombie", 20, 3);
@@ -33,7 +36,7 @@ public class PvETestRunner {
             for (Room room : rooms) {
                 System.out.println("\nEntering Room " + room.getRoomNumber());
 
-                BattleEngine battle = new BattleEngine(player, room);
+                BattleEngine battle = new BattleEngine(player, room, playerHero);
                 battle.startBattle();
 
                 if (player.getHealth() <= 0) {

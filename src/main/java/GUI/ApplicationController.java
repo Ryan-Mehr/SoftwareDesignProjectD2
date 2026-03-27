@@ -1,12 +1,13 @@
 package GUI;
 
 import Classes.Heros.Hero;
-import Classes.Heros.OrderHero;
+import DAO.HeroDAO;
 import Factory.ChaosFactory;
 import Factory.MageFactory;
 import Factory.OrderFactory;
 import Factory.WarriorFactory;
 import GlobalVariables.ApplicationStates;
+import Repository.HeroRepository;
 import Repository.UserRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,8 +33,11 @@ public class ApplicationController {
     @FXML private Label statusLabel;
     @FXML private Label usernameLabel;
     @FXML private ChoiceBox<String> chooseHeroChoicebox;
+    @FXML private ChoiceBox<String> chooseHeroClassChoicebox;
     @FXML private TextField campaignNameField;
 
+    String[] heroIDs;
+    String[] heroNames;
     String[] heroClasses = {"ORDER", "CHAOS", "WARRIOR", "MAGE"};
 
     OrderFactory orderFactory = new OrderFactory();
@@ -44,6 +48,7 @@ public class ApplicationController {
 
     // Make sure Repositories are singletons.
     UserRepository userRepository = UserRepository.getInstance();
+    HeroRepository heroRepository = HeroRepository.getInstance();
 
     // Controller methods.
     public void switchScene(ActionEvent event, String fileName) throws IOException {
@@ -60,6 +65,8 @@ public class ApplicationController {
         }
         stage.setResizable(false);
         stage.show();
+
+        ApplicationStates.inPvEBattle = false;
     }
 
     // Main menu methods.
@@ -253,13 +260,16 @@ public class ApplicationController {
     }
     public void beginPvENewCampaign(ActionEvent event) throws IOException {
         if (checkLoggedIn()) {
+
+            ApplicationStates.isNewCampaign = true;
+
             if (campaignNameField.getText().isEmpty()) {
                 System.out.println("Please enter your campaign name");
                 return;
             }
 
             String choiceBoxValue = (String) chooseHeroChoicebox.getValue();
-            Hero heroChosen;
+            Hero heroChosen = null;
 
             if (chooseHeroChoicebox.getValue() == null) {
                 System.out.println("Please choose a hero");
@@ -287,6 +297,9 @@ public class ApplicationController {
                     break;
             }
 
+            ApplicationStates.campaignName = campaignNameField.getText();
+            ApplicationStates.PvEPlayerHero = heroChosen;
+
             switchScene(event, "PvE");
         }
     }
@@ -298,7 +311,70 @@ public class ApplicationController {
     }
     public void beginPvELoadCampaign(ActionEvent event) throws IOException {
         if (checkLoggedIn()) {
+            ApplicationStates.isNewCampaign = false;
+            // Get the value of the dropdown list.
+            ApplicationStates.campaignName = "";
             switchScene(event, "PvE");
+        }
+    }
+
+    public void goToHeroesMenu(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            switchScene(event, "HeroesMenu");
+        }
+    }
+
+    public void goToHeroesListInfoMenu(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            switchScene(event, "HeroesListInfoMenu");
+        }
+    }
+
+    public void goToHeroMakerMenu(ActionEvent event) throws IOException {
+        if (checkLoggedIn()) {
+            switchScene(event, "HeroMakerMenu");
+        }
+    }
+
+    public void listOutHeroInformation(ActionEvent event) throws IOException {
+        // A
+    }
+
+    public void makeHero(ActionEvent event) throws IOException, SQLException {
+        if (checkLoggedIn()) {
+            // A
+            String choiceBoxValue = (String) chooseHeroClassChoicebox.getValue();
+            Hero heroChosen = orderFactory.createHero();
+
+            if (chooseHeroClassChoicebox.getValue() == null) {
+                System.out.println("Please choose a hero");
+                return;
+                // System.out.println("Automatically choosing the Order Hero.");
+                // choiceBoxValue = "ORDER";
+                // heroChosen = orderFactory.createHero();
+            }
+
+            heroChosen = switch (choiceBoxValue) {
+                case "ORDER" -> {
+                    System.out.println("ORDER");
+                    yield orderFactory.createHero();
+                }
+                case "CHAOS" -> {
+                    System.out.println("CHAOS");
+                    yield chaosFactory.createHero();
+                }
+                case "WARRIOR" -> {
+                    System.out.println("WARRIOR");
+                    yield warriorFactory.createHero();
+                }
+                case "MAGE" -> {
+                    System.out.println("MAGE");
+                    yield mageFactory.createHero();
+                }
+                default -> heroChosen;
+            };
+            heroRepository.saveHero(heroChosen, ApplicationStates.theUser.getId());
+
         }
     }
 
@@ -307,7 +383,12 @@ public class ApplicationController {
     @FXML
     public void initialize() {
         if (chooseHeroChoicebox != null) {
-            chooseHeroChoicebox.getItems().addAll(heroClasses);
+            // chooseHeroChoicebox.getItems().addAll(heroClasses);
+            // You would get the userID and add all Hero IDs here.
+        }
+
+        if (chooseHeroClassChoicebox != null) {
+            chooseHeroClassChoicebox.getItems().addAll(heroClasses);
         }
     }
 

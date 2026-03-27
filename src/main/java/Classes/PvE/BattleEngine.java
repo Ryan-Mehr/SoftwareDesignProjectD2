@@ -1,13 +1,16 @@
 package Classes.PvE;
 
+import Classes.Heros.Hero;
 import Classes.PvE.Enemy;
 import DAO.UserDAO;
 
 public class BattleEngine {
+    private Hero playerHero;
     private Player player;
     private Room room;
 
-    public BattleEngine(Player player, Room room) {
+    public BattleEngine(Player player, Room room, Hero playerHero) {
+        this.playerHero = playerHero;
         this.player = player;
         this.room = room;
     }

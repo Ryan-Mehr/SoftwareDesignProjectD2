@@ -39,6 +39,7 @@ public abstract class Hero {
     // Getters
     public String getHeroID() { return heroID; }
     public HeroClass getHeroClass() { return heroClass; }
+    public String getHeroClassString() {  return heroClass.toString(); }
     public int getLevel() { return level; }
     public int getHp() { return hp; }
     public int getMaxHp() { return maxHp; }

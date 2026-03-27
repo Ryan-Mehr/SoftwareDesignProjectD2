@@ -1,5 +1,8 @@
 package Classes.PvE;
 
+import Classes.Heros.Hero;
+import Factory.CampaignFactory;
+import GlobalVariables.ApplicationStates;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,10 +21,42 @@ public class PvEController {
     @FXML private Label roomLabel;
     @FXML private TextArea battleLog;
 
+    private Campaign currentCampaign;
+
+    private Hero playerHero;
     private Player player;
     private Enemy currentEnemy;
     private Room[] rooms;
     private int currentRoomIndex = 0;
+
+    CampaignFactory campaignFactory = new CampaignFactory();
+
+    public void saveCurrentCampaign(ActionEvent actionEvent) {
+        // Save campaign in the DB. Should use Repository for this.
+    }
+
+    public void initializeCurrentCampaign(ActionEvent actionEvent) {
+        // It should use the Campaign Object.
+        if (ApplicationStates.isNewCampaign) {
+            // Make a default new campaign.
+            System.out.println("New default campaign is being made.");
+            currentCampaign = campaignFactory.createCampaign();
+            currentCampaign.isCompleted = false;
+            currentCampaign.campaignName = ApplicationStates.campaignName;
+            currentCampaign.playerHero = ApplicationStates.PvEPlayerHero;
+            currentCampaign.roomNumberIndex = 0;
+        } else {
+            // Load in the campaign by getting the Campaign from the Repository which gets it from the DAO which gets it from the DB.
+            System.out.println("Campaign is being loaded.");
+        }
+    }
+
+    public void loadCurrentCampaign(ActionEvent actionEvent) {
+        // A
+        currentRoomIndex = currentCampaign.roomNumberIndex;
+        playerHero = currentCampaign.playerHero;
+
+    }
 
     @FXML
     private void handleStartBattle(ActionEvent event) {
@@ -31,7 +66,14 @@ public class PvEController {
 
         startButton.setDisable(true);
 
-        player = new Player("Hero", 100, 20);
+        // ApplicationStates.inPvEBattle being false means that PvE battle is being loaded. If true it means already in PvE battle.
+        if (!ApplicationStates.inPvEBattle) {
+            initializeCurrentCampaign(event);
+            loadCurrentCampaign(event);
+            ApplicationStates.inPvEBattle = true;
+        }
+
+         player = new Player("Hero", playerHero.getMaxHp(), playerHero.getAttack());
 
         Enemy zombie = new Enemy("Zombie", 50, 10);
         Enemy skeleton = new Enemy("Skeleton", 60, 12);
@@ -43,7 +85,7 @@ public class PvEController {
                 new Room(3, spider)
         };
 
-        currentRoomIndex = 0;
+        // currentRoomIndex = 0;
 
         battleLog.clear();
 
@@ -119,6 +161,7 @@ public class PvEController {
             battleLog.appendText("Enemy defeated!\n");
             disableButtons();
             nextRoomButton.setDisable(false);
+            playerHero.setLevel(playerHero.getLevel()+1);
         }
     }
 
@@ -140,6 +183,7 @@ public class PvEController {
             defendButton.setVisible(false);
             nextRoomButton.setDisable(true);
             startButton.setDisable(false);
+            currentCampaign.isCompleted = true;
         }
     }
 

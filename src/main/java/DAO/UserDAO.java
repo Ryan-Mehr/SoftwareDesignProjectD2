@@ -54,7 +54,7 @@ public class UserDAO {
         return ifSo;
     }
 
-        public boolean checkIfUsernameExists(String username) throws SQLException {
+    public boolean checkIfUsernameExists(String username) throws SQLException {
         String query = "SELECT COUNT(*) AS total_amount FROM USERS WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -111,5 +111,18 @@ public class UserDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int findUserID(String username) throws SQLException {
+        String query = "SELECT idUSERS FROM USERS WHERE username = ?";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("idUSERS");
+            }
+        }
+        return -1;
     }
 }

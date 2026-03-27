@@ -1,5 +1,6 @@
 package GlobalVariables;
 
+import Classes.Heros.Hero;
 import Classes.User;
 import Classes.Party;
 
@@ -18,4 +19,10 @@ public class ApplicationStates {
     // Selected parties for PvP
     public static Party selectedParty = null;
     public static Party opponentParty = null;
+
+    // For PvE
+    public static boolean isNewCampaign = false;
+    public static boolean inPvEBattle = false;
+    public static String campaignName = "";
+    public static Hero PvEPlayerHero = null;
 }

@@ -14,7 +14,7 @@
             <Font name="Monospaced Bold" size="36.0" />
          </font>
       </Text>
-      <Button layoutX="225.0" layoutY="350.0" mnemonicParsing="false" onAction="#beginPvENewCampaign" prefHeight="50.0" prefWidth="250.0" text="BEGIN">
+      <Button layoutX="225.0" layoutY="410.0" mnemonicParsing="false" onAction="#beginPvENewCampaign" prefHeight="50.0" prefWidth="250.0" text="BEGIN">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
@@ -41,5 +41,10 @@
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
+      <Button layoutX="34.0" layoutY="272.0" mnemonicParsing="false" onAction="#goToHeroesMenu" prefHeight="18.0" prefWidth="165.0" text="HEROES">
+         <font>
+            <Font name="Monospaced Bold" size="24.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

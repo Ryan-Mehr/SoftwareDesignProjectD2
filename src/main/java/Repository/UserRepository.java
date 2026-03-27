@@ -113,4 +113,8 @@ public class UserRepository {
         return list;
     }
 
+    public int findUserID(String username) throws SQLException {
+        return userDAO.findUserID(username);
+    }
+
 }
