@@ -36,5 +36,11 @@
 
    <!-- Battle Log -->
    <TextArea fx:id="battleLog" editable="false" prefHeight="250" wrapText="true" />
+   <HBox prefHeight="35.0" prefWidth="580.0" spacing="25.0">
+      <children>
+         <Button mnemonicParsing="false" onAction="#saveTheCampaign" text="Save " />
+         <Button mnemonicParsing="false" onAction="#backToMainMenu" text="Back to Main Menu" />
+      </children>
+   </HBox>
 
 </VBox>

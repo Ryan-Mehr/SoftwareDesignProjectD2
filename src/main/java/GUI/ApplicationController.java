@@ -1,9 +1,12 @@
 package GUI;
 
 import Classes.Heros.Hero;
-import DAO.HeroDAO;
+import Classes.PvE.Campaign;
+import DAO.CampaignDAO;
 import Factory.*;
+import GlobalVariables.ApplicationConstants;
 import GlobalVariables.ApplicationStates;
+import Repository.CampaignRepository;
 import Repository.HeroRepository;
 import Repository.UserRepository;
 import javafx.event.ActionEvent;
@@ -33,6 +36,7 @@ public class ApplicationController {
 
     @FXML private ChoiceBox<String> chooseHeroChoicebox;
     @FXML private ChoiceBox<String> chooseHeroClassChoicebox;
+    @FXML private ChoiceBox<String> loadSavedCampaignChoiceBox;
 //    @FXML private Label heroNameLabel;
     @FXML private Label heroClassLabel;
     @FXML private Label heroLevelLabel;
@@ -57,8 +61,8 @@ public class ApplicationController {
     // Make sure Repositories are singletons.
     UserRepository userRepository = UserRepository.getInstance();
     HeroRepository heroRepository = HeroRepository.getInstance();
+    CampaignRepository campaignRepository = CampaignRepository.getInstance();
 
-    // Controller methods.
     public void switchScene(ActionEvent event, String fileName) throws IOException {
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GUI/" + fileName + ".fxml")));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -73,8 +77,6 @@ public class ApplicationController {
         }
         stage.setResizable(false);
         stage.show();
-
-        ApplicationStates.inPvEBattle = false;
     }
 
     // Main menu methods.
@@ -268,46 +270,52 @@ public class ApplicationController {
     }
     public void beginPvENewCampaign(ActionEvent event) throws IOException, SQLException {
         if (checkLoggedIn()) {
-
-            ApplicationStates.isNewCampaign = true;
-
             if (campaignNameField.getText().isEmpty()) {
                 System.out.println("Please enter your campaign name");
                 return;
             }
 
-            String choiceBoxValue = (String) chooseHeroChoicebox.getValue();
-            Hero heroChosen = null;
+            Hero heroChosen;
 
             if (chooseHeroChoicebox.getValue() == null) {
                 System.out.println("Please choose a hero");
                 return;
-                // System.out.println("Automatically choosing the Order Hero.");
-                // choiceBoxValue = "ORDER";
-                // heroChosen = orderFactory.createHero();
             }
 
-            // heroChosen = CentralHeroFactory.makeHeroBasedOnClass(choiceBoxValue);
             heroChosen = getHeroSelected(event);
 
-            ApplicationStates.campaignName = campaignNameField.getText();
-            ApplicationStates.PvEPlayerHero = heroChosen;
+            ApplicationStates.PvECampaign = CampaignFactory.getInstance().createCampaign();
+            ApplicationStates.PvECampaign.setCampaignName(campaignNameField.getText());
+            ApplicationStates.PvECampaign.setRoomNumberIndex(0);
+            ApplicationStates.PvECampaign.setPlayerHero(heroChosen);
+            ApplicationStates.PvECampaign.setPlayerHeroID(heroChosen.getHeroIDInt());
+            ApplicationStates.PvECampaign.setUserID(ApplicationStates.theUser.getId());
+
+            CampaignRepository.getInstance().createCampaign(ApplicationStates.PvECampaign);
 
             switchScene(event, "PvE");
         }
     }
     public void switchToPvELoadCampaign(ActionEvent event) throws IOException {
         if (checkLoggedIn()) {
-            System.out.println("UNAVAILABLE AT THE MOMENT");
-            //switchScene(event, "LoadCampaignMenu");
+            // System.out.println("UNAVAILABLE AT THE MOMENT");
+            switchScene(event, "LoadCampaignMenu");
         }
     }
-    public void beginPvELoadCampaign(ActionEvent event) throws IOException {
+    public void beginPvELoadCampaign(ActionEvent event) throws IOException, SQLException {
         if (checkLoggedIn()) {
-            ApplicationStates.isNewCampaign = false;
-            // Get the value of the dropdown list.
-            ApplicationStates.campaignName = "";
-            switchScene(event, "PvE");
+            if (loadSavedCampaignChoiceBox.getValue() == null) {
+                System.out.println("Please choose a campaign to load.");
+                return;
+            }
+
+            ApplicationStates.PvECampaign = CampaignRepository.getInstance().getCampaign(loadSavedCampaignChoiceBox.getValue(), ApplicationStates.theUser.getId());
+
+            if (ApplicationStates.PvECampaign.getRoomNumberIndex() < ApplicationConstants.totalCampaignRooms) {
+                switchScene(event, "PvE");
+            } else {
+                System.out.println("PvE campaign has been completed.");
+            }
         }
     }
 
@@ -368,25 +376,7 @@ public class ApplicationController {
                 return;
             }
 
-            heroChosen = switch (choiceBoxValue) {
-                case "ORDER" -> {
-                    System.out.println("ORDER");
-                    yield orderFactory.createHero();
-                }
-                case "CHAOS" -> {
-                    System.out.println("CHAOS");
-                    yield chaosFactory.createHero();
-                }
-                case "WARRIOR" -> {
-                    System.out.println("WARRIOR");
-                    yield warriorFactory.createHero();
-                }
-                case "MAGE" -> {
-                    System.out.println("MAGE");
-                    yield mageFactory.createHero();
-                }
-                default -> heroChosen;
-            };
+            heroChosen = CentralHeroFactory.makeHeroBasedOnClass(choiceBoxValue);
             heroRepository.saveHero(heroChosen, ApplicationStates.theUser.getId());
 
         }
@@ -411,6 +401,16 @@ public class ApplicationController {
 
         if (chooseHeroClassChoicebox != null) {
             chooseHeroClassChoicebox.getItems().addAll(heroClasses);
+        }
+
+        if (loadSavedCampaignChoiceBox != null) {
+            System.out.println("You see this?");
+            List<Campaign> campaigns = CampaignDAO.getInstance().getCampaigns(ApplicationStates.theUser.getId());
+
+            for (Campaign campaign : campaigns) {
+                System.out.println("FROM LISTING OUT CAMPAIGNS: " + campaign.getCampaignName() + "#" + campaign.getUserID());
+                loadSavedCampaignChoiceBox.getItems().addAll(campaign.getCampaignName());
+            }
         }
     }
 

@@ -3,11 +3,49 @@ package Classes.PvE;
 import Classes.Heros.Hero;
 
 public class Campaign {
-    boolean isCompleted;
-    String campaignName;
-    Hero playerHero;
-    /*
-    Maybe have a table for HEROES. And that the Campaign only says HERO id. Once Campaign is found in the DB through name, it then finds the Hero by ID.
-     */
-    int roomNumberIndex;
+    private String campaignName;
+    private int roomNumberIndex;
+    private Hero playerHero;
+    private int playerHeroID;
+    private int userID;
+
+    public String getCampaignName() {
+        return campaignName;
+    }
+
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
+    }
+
+    public int getRoomNumberIndex() {
+        return roomNumberIndex;
+    }
+
+    public void setRoomNumberIndex(int roomNumberIndex) {
+        this.roomNumberIndex = roomNumberIndex;
+    }
+
+    public Hero getPlayerHero() {
+        return playerHero;
+    }
+
+    public void setPlayerHero(Hero playerHero) {
+        this.playerHero = playerHero;
+    }
+
+    public int getPlayerHeroID() {
+        return playerHeroID;
+    }
+
+    public void setPlayerHeroID(int playerHeroID) {
+        this.playerHeroID = playerHeroID;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
 }

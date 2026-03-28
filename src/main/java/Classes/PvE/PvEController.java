@@ -1,13 +1,21 @@
 package Classes.PvE;
 
 import Classes.Heros.Hero;
-import Factory.CampaignFactory;
 import GlobalVariables.ApplicationStates;
+import Repository.CampaignRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Objects;
 
 public class PvEController {
 
@@ -23,38 +31,15 @@ public class PvEController {
 
     private Campaign currentCampaign;
 
-    private Hero playerHero;
     private Player player;
     private Enemy currentEnemy;
     private Room[] rooms;
     private int currentRoomIndex = 0;
-
-    CampaignFactory campaignFactory = new CampaignFactory();
-
-    public void saveCurrentCampaign(ActionEvent actionEvent) {
-        // Save campaign in the DB. Should use Repository for this.
-    }
-
-    public void initializeCurrentCampaign(ActionEvent actionEvent) {
-        // It should use the Campaign Object.
-        if (ApplicationStates.isNewCampaign) {
-            // Make a default new campaign.
-            System.out.println("New default campaign is being made.");
-            currentCampaign = campaignFactory.createCampaign();
-            currentCampaign.isCompleted = false;
-            currentCampaign.campaignName = ApplicationStates.campaignName;
-            currentCampaign.playerHero = ApplicationStates.PvEPlayerHero;
-            currentCampaign.roomNumberIndex = 0;
-        } else {
-            // Load in the campaign by getting the Campaign from the Repository which gets it from the DAO which gets it from the DB.
-            System.out.println("Campaign is being loaded.");
-        }
-    }
+    private boolean nowStarted = false;
 
     public void loadCurrentCampaign(ActionEvent actionEvent) {
         // A
-        currentRoomIndex = currentCampaign.roomNumberIndex;
-        playerHero = currentCampaign.playerHero;
+        currentRoomIndex = ApplicationStates.PvECampaign.getRoomNumberIndex();
 
     }
 
@@ -67,13 +52,14 @@ public class PvEController {
         startButton.setDisable(true);
 
         // ApplicationStates.inPvEBattle being false means that PvE battle is being loaded. If true it means already in PvE battle.
-        if (!ApplicationStates.inPvEBattle) {
-            initializeCurrentCampaign(event);
+        if (!nowStarted) {
+            System.out.println("Loading in the CAMPAIGN.");
             loadCurrentCampaign(event);
-            ApplicationStates.inPvEBattle = true;
+        } else {
+            System.out.println("Not loading in the campaign again.");
         }
 
-         player = new Player("Hero", playerHero.getMaxHp(), playerHero.getAttack());
+         player = new Player(ApplicationStates.PvECampaign.getPlayerHero().getHeroClassString(), ApplicationStates.PvECampaign.getPlayerHero().getMaxHp(), ApplicationStates.PvECampaign.getPlayerHero().getAttack());
 
         Enemy zombie = new Enemy("Zombie", 50, 5);
         Enemy skeleton = new Enemy("Skeleton", 60, 6);
@@ -116,7 +102,7 @@ public class PvEController {
     }
 
     @FXML
-    private void handleAttack(ActionEvent event) {
+    private void handleAttack(ActionEvent event) throws SQLException {
         int damage = player.attack();
         currentEnemy.takeDamage(damage);
         battleLog.appendText("Player attacks " + currentEnemy.getName() +
@@ -128,7 +114,7 @@ public class PvEController {
     }
 
     @FXML
-    private void handleDefend(ActionEvent event) {
+    private void handleDefend(ActionEvent event) throws SQLException {
         player.defend();
         battleLog.appendText("Player defends!\n");
 
@@ -152,7 +138,7 @@ public class PvEController {
                 ": " + currentEnemy.getName());
     }
 
-    private void checkBattleEnd() {
+    private void checkBattleEnd() throws SQLException {
         if (player.getHealth() <= 0) {
             battleLog.appendText("Player defeated!\n");
             disableButtons();
@@ -161,12 +147,12 @@ public class PvEController {
             battleLog.appendText("Enemy defeated!\n");
             disableButtons();
             nextRoomButton.setDisable(false);
-            playerHero.setLevel(playerHero.getLevel()+1);
+            ApplicationStates.PvECampaign.getPlayerHero().setLevel(ApplicationStates.PvECampaign.getPlayerHero().getLevel() + 1);
         }
     }
 
     @FXML
-    private void handleNextRoom(ActionEvent event) {
+    private void handleNextRoom(ActionEvent event) throws SQLException, IOException {
 
         currentRoomIndex++;
         if (currentRoomIndex < rooms.length) {
@@ -175,7 +161,6 @@ public class PvEController {
             defendButton.setVisible(true);
             attackButton.setDisable(false);
             defendButton.setDisable(false);
-
             nextRoomButton.setDisable(true);
         } else {
             battleLog.appendText("\nCampaign Complete!\n");
@@ -183,7 +168,7 @@ public class PvEController {
             defendButton.setVisible(false);
             nextRoomButton.setDisable(true);
             startButton.setDisable(false);
-            currentCampaign.isCompleted = true;
+            saveTheCampaign(event);
         }
     }
 
@@ -205,6 +190,34 @@ public class PvEController {
         attackButton.setVisible(false);
         defendButton.setVisible(false);
         nextRoomButton.setDisable(true);
+    }
+
+    public void switchScene(ActionEvent event, String fileName) throws IOException {
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GUI/" + fileName + ".fxml")));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(newRoot);
+        if (Objects.equals(fileName, "BattleView")) {
+            stage.setWidth(1100);
+            stage.setHeight(900);
+        }
+        else {
+            stage.setWidth(700);
+            stage.setHeight(700);
+        }
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public void backToMainMenu(ActionEvent event) throws IOException {
+        switchScene(event, "MainMenu");
+    }
+
+    public void saveTheCampaign(ActionEvent event) throws IOException, SQLException {
+        // CampaignRepository.getInstance().createCampaign(ApplicationStates.PvECampaign);
+        System.out.println("Saving campaign, " + ApplicationStates.PvECampaign.getRoomNumberIndex() + " " + currentRoomIndex);
+        ApplicationStates.PvECampaign.setRoomNumberIndex(currentRoomIndex);
+        System.out.println("Saving campaign, " + ApplicationStates.PvECampaign.getRoomNumberIndex() + " " + currentRoomIndex);
+        CampaignRepository.getInstance().updateCampaign(ApplicationStates.PvECampaign, ApplicationStates.PvECampaign.getCampaignName(), ApplicationStates.theUser.getId());
     }
 
 }
