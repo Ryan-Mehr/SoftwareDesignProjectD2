@@ -35,37 +35,37 @@
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Button>
-      <Label fx:id="heroClass" layoutX="242.0" layoutY="194.0" prefHeight="25.0" prefWidth="250.0" />
+      <Label fx:id="heroClassLabel" layoutX="242.0" layoutY="194.0" prefHeight="25.0" prefWidth="250.0" />
       <Text layoutX="24.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HERO CLASS" textAlignment="CENTER" wrappingWidth="218.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="heroLevel" layoutX="242.0" layoutY="222.0" prefHeight="25.0" prefWidth="250.0" />
+      <Label fx:id="heroLevelLabel" layoutX="242.0" layoutY="222.0" prefHeight="25.0" prefWidth="250.0" />
       <Text layoutX="24.0" layoutY="242.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HERO LEVEL" textAlignment="CENTER" wrappingWidth="218.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="heroAttack" layoutX="242.0" layoutY="248.0" prefHeight="25.0" prefWidth="250.0" />
+      <Label fx:id="heroAttackLabel" layoutX="242.0" layoutY="248.0" prefHeight="25.0" prefWidth="250.0" />
       <Text layoutX="24.0" layoutY="268.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HERO ATTACK" textAlignment="CENTER" wrappingWidth="218.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="heroDefense" layoutX="242.0" layoutY="274.0" prefHeight="25.0" prefWidth="250.0" />
+      <Label fx:id="heroDefenseLabel" layoutX="242.0" layoutY="274.0" prefHeight="25.0" prefWidth="250.0" />
       <Text layoutX="24.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HERO DEFENSE" textAlignment="CENTER" wrappingWidth="218.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="heroMaxHP" layoutX="242.0" layoutY="301.0" prefHeight="25.0" prefWidth="250.0" />
+      <Label fx:id="heroMaxHPLabel" layoutX="242.0" layoutY="301.0" prefHeight="25.0" prefWidth="250.0" />
       <Text layoutX="24.0" layoutY="321.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HERO MAXHP" textAlignment="CENTER" wrappingWidth="218.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="heroMaxMana" layoutX="242.0" layoutY="328.0" prefHeight="25.0" prefWidth="250.0" />
+      <Label fx:id="heroMaxManaLabel" layoutX="242.0" layoutY="328.0" prefHeight="25.0" prefWidth="250.0" />
       <Text layoutX="24.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HERO MAXMANA" textAlignment="CENTER" wrappingWidth="218.0">
          <font>
             <Font name="Monospaced Bold" size="24.0" />

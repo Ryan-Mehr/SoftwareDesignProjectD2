@@ -5,6 +5,8 @@ import java.util.*;
 
 public abstract class Hero {
     protected String heroID = "";
+    protected int heroIDInt = -1;
+    protected int userID = -1;
     protected HeroClass heroClass;
     protected int level = 1;
     protected int maxLevel = 20;
@@ -37,7 +39,9 @@ public abstract class Hero {
     }
 
     // Getters
-    public String getHeroID() { return heroID; }
+    public int getHeroIDInt() {
+        return heroIDInt;
+    }
     public HeroClass getHeroClass() { return heroClass; }
     public String getHeroClassString() {  return heroClass.toString(); }
     public int getLevel() { return level; }
@@ -53,9 +57,22 @@ public abstract class Hero {
     public boolean isDefending() { return defending; }
 
     // Setters
+    public void setHeroIDInt(int heroIDInt) {
+        this.heroIDInt = heroIDInt;
+    }
+    public void setHeroUserID(int userID) {
+        this.userID = userID;
+    }
+    public void setHeroClass(HeroClass heroClass) {
+        this.heroClass = heroClass;
+    }
     public void setLevel(int level) {
         this.level = level;
         recalculateStats();
+    }
+
+    public void setMaxHP(int maxHp) {
+        this.maxHp = maxHp;
     }
 
     public void setHp(int hp) {
@@ -67,9 +84,21 @@ public abstract class Hero {
         }
     }
 
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
     public void setMana(int mana) {
         this.mana = mana;
         if (this.mana > maxMana) this.mana = maxMana;
+    }
+
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
     }
 
     protected void recalculateStats() {

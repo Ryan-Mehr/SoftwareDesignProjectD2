@@ -21,6 +21,7 @@ public class ApplicationStates {
     public static Party opponentParty = null;
 
     // For PvE
+    public static Hero selectedHero = null;
     public static boolean isNewCampaign = false;
     public static boolean inPvEBattle = false;
     public static String campaignName = "";

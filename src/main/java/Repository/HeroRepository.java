@@ -4,6 +4,7 @@ import Classes.Heros.Hero;
 import DAO.HeroDAO;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class HeroRepository {
     private static volatile HeroRepository obj = null;
@@ -27,7 +28,11 @@ public class HeroRepository {
         heroDAO.saveHero(hero, userID);
     }
 
-    public Hero getHero(int userID) throws SQLException {
-        return heroDAO.getHero(userID);
+    public Hero getIndividualHero(int heroID) throws SQLException {
+        return heroDAO.getIndividualHero(heroID);
+    }
+
+    public List<Hero> getHeroes(int userID) throws SQLException {
+        return heroDAO.getHeroes(userID);
     }
 }

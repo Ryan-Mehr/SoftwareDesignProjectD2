@@ -2,6 +2,7 @@ package DAO;
 
 import Classes.Heros.Hero;
 import Classes.User;
+import Factory.*;
 import Repository.DatabaseManager;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -9,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HeroDAO {
     private static volatile HeroDAO obj = null;
@@ -26,23 +29,6 @@ public class HeroDAO {
         return obj;
     }
 
-//    public boolean save(String username, String password) throws SQLException {
-//        String query = "INSERT INTO USERS (username, password) VALUES (?, ?)";
-//        boolean ifSo = false;
-//
-//        try (Connection conn = DatabaseManager.getConnection()) {
-//            PreparedStatement preparedStatement = conn.prepareStatement(query);
-//            preparedStatement.setString(1, username);
-//            ifSo = preparedStatement.executeUpdate() > 0;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return false;
-//        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return ifSo;
-//    }
-
     public void saveHero(Hero hero, int userID) throws SQLException {
         String query = "INSERT INTO HEROES (class, level, maxHP, maxMana, attack, defense, userID) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -55,46 +41,79 @@ public class HeroDAO {
             preparedStatement.setInt(5, hero.getAttack());
             preparedStatement.setInt(6, hero.getDefense());
             preparedStatement.setInt(7, userID);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public Hero getHero(int userID) throws SQLException {
+    public Hero makeHeroWithProperties(int heroIDGotten, int userIDGotten, String heroClass, int level, int maxHp, int maxMana, int attack, int defense) throws SQLException {
+        Hero heroMade = CentralHeroFactory.makeHeroBasedOnClass(heroClass);
+        heroMade.setHeroIDInt(heroIDGotten);
+        heroMade.setHeroUserID(userIDGotten);
+        heroMade.setLevel(level);
+        heroMade.setMaxHP(maxHp);
+        heroMade.setMaxMana(maxMana);
+        heroMade.setAttack(attack);
+        heroMade.setDefense(defense);
+
+        return heroMade;
+    }
+
+    public Hero getIndividualHero(int heroID) throws SQLException {
+        String query = "SELECT * FROM HEROES WHERE idHEROES = ?";
+
+        Hero heroMade = null;
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, heroID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int heroIDGotten = resultSet.getInt("idHEROES");
+                int userIDGotten = resultSet.getInt("userID");
+                String heroClass = resultSet.getString("class");
+                int level = resultSet.getInt("level");
+                int maxHp = resultSet.getInt("maxHP");
+                int maxMana = resultSet.getInt("maxMana");
+                int attack = resultSet.getInt("attack");
+                int defense = resultSet.getInt("defense");
+
+                heroMade = makeHeroWithProperties(heroIDGotten, userIDGotten, heroClass, level, maxHp, maxMana, attack, defense);
+            }
+        }
+
+        return heroMade;
+    }
+
+    public List<Hero> getHeroes(int userID) throws SQLException {
+        List<Hero> heroes = new ArrayList<>();
         String query = "SELECT * FROM HEROES WHERE userID = ?";
 
         try  (Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, userID);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return null; // do friday.
-            }
-        }
-        return null;
-    }
+            while (resultSet.next()) {
+                Hero heroMade;
+                int heroIDGotten = resultSet.getInt("idHEROES");
+                int userIDGotten = resultSet.getInt("userID");
+                String heroClass = resultSet.getString("class");
+                int level = resultSet.getInt("level");
+                int maxHp = resultSet.getInt("maxHP");
+                int maxMana = resultSet.getInt("maxMana");
+                int attack = resultSet.getInt("attack");
+                int defense = resultSet.getInt("defense");
 
-    public User login(String username, String password) throws SQLException {
-        // String query = "SELECT idUSERS, username FROM USERS WHERE username = ? AND password = ?";
-        String query = "SELECT idUSERS, username, password FROM USERS WHERE username = ?";
+                heroMade = makeHeroWithProperties(heroIDGotten, userIDGotten, heroClass, level, maxHp, maxMana, attack, defense);
 
-        try (Connection conn = DatabaseManager.getConnection()) {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, username);
-            // preparedStatement.setString(2, password);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                //System.out.println("-=-=-=We got here.");
-                String storedHash = resultSet.getString("password");
-                if (BCrypt.checkpw(password, storedHash)) {
-                    return new User(resultSet.getInt("idUSERS"), resultSet.getString("username"));
+                if (heroMade != null) {
+                    heroes.add(heroMade);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
+        return heroes;
     }
 }

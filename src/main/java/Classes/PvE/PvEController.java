@@ -75,9 +75,9 @@ public class PvEController {
 
          player = new Player("Hero", playerHero.getMaxHp(), playerHero.getAttack());
 
-        Enemy zombie = new Enemy("Zombie", 50, 10);
-        Enemy skeleton = new Enemy("Skeleton", 60, 12);
-        Enemy spider = new Enemy("Spider", 40, 8);
+        Enemy zombie = new Enemy("Zombie", 50, 5);
+        Enemy skeleton = new Enemy("Skeleton", 60, 6);
+        Enemy spider = new Enemy("Spider", 40, 4);
 
         rooms = new Room[] {
                 new Room(1, zombie),
