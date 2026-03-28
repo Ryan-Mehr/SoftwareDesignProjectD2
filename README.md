@@ -15,7 +15,7 @@
         2. Connect to the MySQL Connection, password for 'root' is 'admin12345' and additional information can be found in the docker-compose.yml file.
         3. Once connected, click on 'Server' then 'Data Import'.
             * Click on 'Import from Self Contained File'.
-            * Select the DB_Setup_V2.sql file.
+            * Select the DB_Setup_V5.sql file.
             * Start Import
             * If you refresh on Schemas, you should see the new tables created.
     5) You are now ready to start the game through the Launcher.java file in the GUI folder.
